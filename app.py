@@ -1,4 +1,4 @@
-from flask import Flask, url_for, render_template,flash
+from flask import Flask, url_for, render_template,flash,request, redirect
 from bs4 import BeautifulSoup
 #外部のサイトにアクセスすることができるモジュール
 import requests
@@ -7,22 +7,34 @@ from openpyxl import Workbook
 
 app = Flask(__name__)
 
+#ページを開いた時に処理をするところ。
 @app.route("/", methods=["GET"])
 def index():
     return render_template("top.html")
 
-@app.route("/", methods=["GET","POST"])
-def rakuten_get(): 
-    if request.form["rakuten.put"]:
+
+@app.route("/input", methods=["GET","POST"])
+def input(): 
+    if request.form["inputText"]:
+        #def fetch（）の処理を実行し、「result」に代入する。
         result=fetch()
-        return render_template("")
+
+    else:
+        flash("URLを入力してください。")
+        return render_template("top.html")    
+
+        #結果を「result.html」に表示させる。
+        return render_template("result.html",data=result)
+
+def fetch():
     #楽天のwebページを取得する。
-    r = request.get("https://review.rakuten.co.jp/item/1/203555_10001672/1.1/")
+    r = requests.get("https://review.rakuten.co.jp/item/1/203555_10001672/1.1/")
     #resp=requests.get(address)
     soup=BeautifulSoup(r.content,'html.parser')
     #各項目のHTMLを取得する、
     #購入者
-    contentA=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
+    contentA=soup.select_one('#revUseEntry >div.revRvwUserEntryCnt>dl.revRvwUserEntryInr > dd.revRvwUserEntryCmt description').get_text()
+    """
     #星の数
     contentB=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
     #商品の使い道
@@ -37,11 +49,18 @@ def rakuten_get():
     contentG=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
     #本文
     contentH=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
-    
-    
-def fetch():
+    """
+
+    return contentA
+
+    """
     wb=Workbook()
     ws=wb.activate
+
+    #top.htmlでタイトルを出力させ、シート名になる
+    ws.title='hoge'
+
+
     ws.title='Sample'
     ws['A1'].value='購入者名'
     ws['B1'].value='星の数'
@@ -51,14 +70,12 @@ def fetch():
     ws['F1'].value='日付'
     ws['G1'].value='タイトル'
     ws['H1'].value='本文'
-    #取得したデータをループさせて、「data」に代入
-    # for i in range()
     
     #値を出力する。
     makeData()
     
-    #Excelにデータを保存する。
+    #saveでExcelファイルを保存する。
     wb.save('data.xlsx')
-
-    if __name__ == '__main__':
-        app.run(debug=True)
+    """
+if __name__ == '__main__':
+    app.run(debug=True)
