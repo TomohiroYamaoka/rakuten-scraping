@@ -1,7 +1,8 @@
 from flask import Flask, url_for, render_template,flash,request, redirect
 from bs4 import BeautifulSoup
 #外部のサイトにアクセスすることができるモジュール
-import requests
+import requests,bs4
+import os
 #エクセルファイルをしようすることができるモジュール
 from openpyxl import Workbook 
 
@@ -19,22 +20,27 @@ def input():
         #def fetch（）の処理を実行し、「result」に代入する。
         result=fetch()
 
+        #結果を「result.html」に表示させる。
+        return render_template("result.html",data=result)
+
     else:
         flash("URLを入力してください。")
         return render_template("top.html")    
 
-        #結果を「result.html」に表示させる。
-        return render_template("result.html",data=result)
 
 def fetch():
+    #入力したURLをurl代入する。
+    url=request.form["inputText"]
     #楽天のwebページを取得する。
-    r = requests.get("https://review.rakuten.co.jp/item/1/203555_10001672/1.1/")
+    r = requests.get(url)
     #resp=requests.get(address)
+    contenA=r.text
+
+    """
     soup=BeautifulSoup(r.content,'html.parser')
     #各項目のHTMLを取得する、
     #購入者
-    contentA=soup.select_one('#revUseEntry >div.revRvwUserEntryCnt>dl.revRvwUserEntryInr > dd.revRvwUserEntryCmt description').get_text()
-    """
+    contentA=soup.select('revUseEntry >div.revRvwUserEntryCnt>dl.revRvwUserEntryInr > dd.revRvwUserEntryCmt description')
     #星の数
     contentB=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
     #商品の使い道
@@ -51,7 +57,7 @@ def fetch():
     contentH=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
     """
 
-    return contentA
+    return contenA
 
     """
     wb=Workbook()
