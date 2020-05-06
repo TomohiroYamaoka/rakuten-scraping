@@ -32,32 +32,24 @@ def fetch():
     #入力したURLをurl代入する。
     url=request.form["inputText"]
     #楽天のwebページを取得する。
-    r = requests.get(url)
+    response = requests.get(url)
     #resp=requests.get(address)
-    contenA=r.text
-
-    """
-    soup=BeautifulSoup(r.content,'html.parser')
+    html=response.content
+    soup=BeautifulSoup(html,'html.parser')
+    
     #各項目のHTMLを取得する、
-    #購入者
-    contentA=soup.select('revUseEntry >div.revRvwUserEntryCnt>dl.revRvwUserEntryInr > dd.revRvwUserEntryCmt description')
-    #星の数
-    contentB=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
-    #商品の使い道
-    contentC=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
-    #商品を使う人
-    contentD=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
+    #商品の使い道、商品を使う人
+    contentA=soup.find_all("span",class_="revDispListTxt")
     #購入した回数
-    contentE=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
-    #日付
-    contentF=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
+    contentB=soup.find_all("span",class_="revUserDispList")
+    #本文(brを抜く)
+    contentC=soup.find_all("dd",class_="revRvwUserEntryCmt description")
     #タイトル
-    contentG=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
-    #本文
-    contentH=soup.select_one('#〇〇>div.▲▲>div.××').get_text(strip=True)
-    """
+    contentD=soup.find_all("span",class_="revUserRvwerNum value")
+    #評価（星の数）
 
-    return contenA
+
+    return contentA,contentB,contentC,contentD
 
     """
     wb=Workbook()
