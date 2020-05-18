@@ -48,8 +48,20 @@ def fetch():
     contentD=soup.find_all("span",class_="revUserRvwerNum value")
     #評価（星の数）
 
+    #日付
+    contentE=soup.find_all("span",class_="revUserEntryDate dtreviewed")
 
-    return contentA,contentB,contentC,contentD
+
+    #https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q11177607676
+    #https://qiita.com/Gen6/items/eef1ac5f6b8bb816f677
+
+    for i in contentA:
+        a=(i.string)
+
+    for i in contentB:
+        contentb=(i.string)
+
+    return a,contentb,contentC,contentD,contentE
 
     """
     wb=Workbook()
