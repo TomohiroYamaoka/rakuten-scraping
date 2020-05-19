@@ -37,6 +37,10 @@ def fetch():
     html=response.content
     soup=BeautifulSoup(html,'html.parser')
     
+    #空白の配列を作成する。
+    data=[]
+    
+    
     #各項目のHTMLを取得する、
     #商品の使い道、商品を使う人
     contentA=soup.find_all("span",class_="revDispListTxt")
@@ -51,17 +55,13 @@ def fetch():
     #日付
     contentE=soup.find_all("span",class_="revUserEntryDate dtreviewed")
 
-
     #https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q11177607676
     #https://qiita.com/Gen6/items/eef1ac5f6b8bb816f677
+    #https://qiita.com/toshiyuki_tsutsui/items/f143946944a428ed105b
 
-    for i in contentA:
-        a=(i.string)
-
-    for i in contentB:
-        contentb=(i.string)
-
-    return a,contentb,contentC,contentD,contentE
+    #HTMLを文字列にしてタグ、文字列を排除する。
+    #https://qiita.com/hidetoshi_n_cograph/items/fca19b490fd0210e3633
+    return contentA,contentB,contentC,contentD,contentE
 
     """
     wb=Workbook()
